@@ -1,6 +1,6 @@
 import Feature from '../Feature.js';
-import supportsProperty from '../../../supports/css/property.js';
-import supportsValue from '../../../supports/css/value.js';
+import supportsProperty from '../../../supports/src/types/css/property.js';
+import supportsValue from '../../../supports/src/types/css/value.js';
 
 export class CSSPropertyValueFeature extends Feature {
 	static children = null;
