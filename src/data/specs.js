@@ -1,4 +1,4 @@
-import * as specDefs from '../spec-defs.js';
+import * as specDefs from '../../features/specs.js';
 import AbstractFeature from '../classes/AbstractFeature.js';
 import Spec from '../classes/Spec.js';
 
