@@ -2,20 +2,19 @@
 /**
  * Setup dummy elements
  */
-import { prefixes, domPrefixes } from '../supports/shared.js';
+import { prefixes, domPrefixes } from '../supports/src/data.js';
 import { IS_DEV } from './util.js';
 
-import property from '../supports/property.js';
-import value from '../supports/value.js';
-import descriptor from '../supports/descriptor.js';
-import descriptorvalue from '../supports/descriptorvalue.js';
-import selector from '../supports/selector.js';
-import atrule from '../supports/atrule.js';
-import mq from '../supports/mq.js';
-import variable from '../supports/variable.js';
-import Global from '../supports/global.js';
-import member from '../supports/member.js';
-import testExtends from '../supports/extends.js';
+import property from '../supports/src/types/css/property.js';
+import value from '../supports/src/types/css/value.js';
+import descriptor from '../supports/src/types/css/descriptor.js';
+import descriptorvalue from '../supports/src/types/css/descriptor-value.js';
+import selector from '../supports/src/types/css/selector.js';
+import atrule from '../supports/src/types/css/atrule.js';
+import mq from '../supports/src/types/css/mq.js';
+import Global from '../supports/src/types/js/global.js';
+import member from '../supports/src/types/js/member.js';
+import testExtends from '../supports/src/types/js/extends.js';
 
 const Supports = {
 	prefixes,
@@ -27,7 +26,6 @@ const Supports = {
 	selector,
 	atrule,
 	mq,
-	variable,
 	global: Global,
 	member,
 	extends: testExtends,
@@ -38,5 +36,4 @@ if (IS_DEV) {
 }
 
 export default Supports;
-export { property, value, descriptor, descriptorvalue, selector, atrule, mq, variable, Global, member, testExtends };
-
+export * from '../supports/src/index.js';
