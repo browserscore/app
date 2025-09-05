@@ -36,5 +36,4 @@ if (IS_DEV) {
 }
 
 export default Supports;
-export { property, value, descriptor, descriptorvalue, selector, atrule, mq, Global, member, testExtends };
-
+export * from '../supports/src/index.js';
