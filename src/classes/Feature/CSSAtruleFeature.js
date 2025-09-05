@@ -1,7 +1,7 @@
 import Feature from '../Feature.js';
-import supportsAtrule from '../../supports/atrule.js';
-import supportsDescriptor from '../../supports/descriptor.js';
-import supportsDescriptorValue from '../../supports/descriptorvalue.js';
+import supportsAtrule from '../../../supports/atrule.js';
+import supportsDescriptor from '../../../supports/descriptor.js';
+import supportsDescriptorValue from '../../../supports/descriptorvalue.js';
 
 export class CSSAtruleDescriptorFeature extends Feature {
 	static children = {
