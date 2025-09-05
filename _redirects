@@ -1,0 +1,3 @@
+node_modules/:modulename/* https://cdn.jsdelivr.net/npm/:modulename@latest/:splat 200
+/features/* https://features.browserscore.dev/:splat 200
+/supports/* https://supports.browserscore.dev/:splat 200
