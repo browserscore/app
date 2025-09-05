@@ -3,8 +3,8 @@
  * where the focus is the value
  */
 import Feature from '../Feature.js';
-import supportsProperty from '../../../supports/property.js';
-import supportsValue from '../../../supports/value.js';
+import supportsProperty from '../../../supports/css/property.js';
+import supportsValue from '../../../supports/css/value.js';
 
 export class CSSValuePropertyFeature extends Feature {
 	static children = null;
