@@ -22,7 +22,7 @@ const meta = {
 		title: 'Globals',
 	},
 	mediaqueries: {
-		supports: 'mq',
+		supports: 'mediaQuery',
 		title: 'Media queries',
 	},
 };
