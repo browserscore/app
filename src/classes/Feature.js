@@ -295,7 +295,12 @@ export default class Feature extends AbstractFeature {
 		let testCallback = Supports[supportsName];
 
 		if (!testCallback) {
-			return null;
+			supportsName = supportsName[0].toUpperCase() + supportsName.slice(1);
+			testCallback = Supports[`css${supportsName}`] ?? Supports[`js${supportsName}`] ?? Supports[`html${supportsName}`];
+
+			if (!testCallback) {
+				return null;
+			}
 		}
 
 		let test = this.tests?.[0] ?? this.id;
