@@ -160,8 +160,10 @@ let appSpec = {
 				return root;
 			}
 
+			// Get children from the filtered-out specs
 			let children = this.specs.flatMap(spec => spec.children);
 			if (!children.length) {
+				// On app launch, fallback to the children of all known specs
 				children = root.children;
 			}
 
