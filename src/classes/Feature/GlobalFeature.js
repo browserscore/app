@@ -1,7 +1,7 @@
 import Feature from '../Feature.js';
-import testExtends from '../../../supports/src/types/js/extends.js';
-import supportsGlobal from '../../../supports/src/types/js/global.js';
-import supportsMember from '../../../supports/src/types/js/member.js';
+import testExtends from '../../../../supports/src/types/js/extends.js';
+import supportsGlobal from '../../../../supports/src/types/js/global.js';
+import supportsMember from '../../../../supports/src/types/js/member.js';
 
 export class MemberFeature extends Feature {
 	static children = {

@@ -1,4 +1,4 @@
-import { toArray } from "../supports/src/util.js";
+import { toArray } from "../../supports/src/util.js";
 export { toArray };
 
 export const IS_DEV = (location.hostname === 'localhost' || location.search.includes('env=dev')) && !location.search.includes('env=prod');
@@ -122,4 +122,3 @@ export function groupBy (arr, fn) {
 
 	return grouped;
 }
-
