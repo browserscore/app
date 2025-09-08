@@ -160,7 +160,12 @@ let appSpec = {
 				return root;
 			}
 
-			let children = this.computedFilter ? root.children.filter(child => child.matchesFilter(this.computedFilter)) : root.children;
+			let children = this.specs.flatMap(spec => spec.children);
+			if (!children.length) {
+				children = root.children;
+			}
+
+			children = this.computedFilter ? children.filter(child => child.matchesFilter(this.computedFilter)) : children;
 			children = this.groupBy.length ? groupFeatures(children, this.groupBy) : children;
 
 			return new FeatureProxy(this.root, children);
