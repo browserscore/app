@@ -12,6 +12,9 @@ export default class CSSValueFeature extends Feature {
 		properties: {
 			single: 'property',
 		},
+		args: {
+			single: 'arg',
+		}
 	}
 
 	_createChildren () {
@@ -33,17 +36,32 @@ export default class CSSValueFeature extends Feature {
 	get code () {
 		// TODO figure out when to show the property name too and return
 		// return `${this.property}: ${this.value}`;
-
 		if (this.def.fromParent === 'properties') {
 			return this.property;
 		}
 
-		return this.value;
+		if (this.def.fromParent === 'args') {
+			return this.value;
+		}
+
+		return this.id;
+
 	}
 
 	get value () {
+		if (this.def.fromParent === 'args') {
+			let fn = this.parent.id;
+			return fn.replace(/\(\)$/, `(${this.id})`);
+		}
+
 		if (this.def.fromParent === 'properties') {
 			return this.parent.value;
+		}
+
+		if (this.args) {
+			// It's a CSS function.
+			// use the first argument; we don't want to get an invalid value like foobar()
+			return this.args[0].value;
 		}
 
 		if (!this.gatingTest && this.tests?.length > 0) {
