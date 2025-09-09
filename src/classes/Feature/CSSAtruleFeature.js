@@ -57,6 +57,7 @@ export default class CSSAtruleFeature extends Feature {
 		...super.children,
 		suffixes: {
 			type: CSSAtruleFeature,
+			single: 'suffix',
 		},
 		preludes: {
 			type: CSSAtruleFeature,
@@ -90,24 +91,13 @@ export default class CSSAtruleFeature extends Feature {
 	}
 
 	getCode (o = {}) {
-		let ret = this.name.replace(/^@?/, '@');
-
-		if (o.suffix !== false) {
-			ret += this.computedSuffix;
-		}
-
-		if (o.prelude !== false) {
-			let prelude = this.computedPrelude;
-			if (prelude) {
-				ret += ' ' + prelude;
-			}
-		}
+		let ret = this.testValue;
 
 		if (o.contents && this.contents !== false) {
 			let contents = typeof o.contents === 'string' ? o.contents : this.contents || '';
 			ret += `{ ${contents} }`;
 		}
-		else if (o.semicolon !== false && this.contents === false) {
+		else if (this.contents === false) {
 			ret += ';';
 		}
 
@@ -115,43 +105,45 @@ export default class CSSAtruleFeature extends Feature {
 	}
 
 	get code () {
-		return this.getCode({prelude: this.def.fromParent === 'preludes'});
+		return this.getCode();
 	}
 
-	get name () {
-		if (this.def.fromParent === 'preludes' || this.def.fromParent === 'suffixes') {
-			return this.parent.name;
-		}
+	get testValue () {
+		let ret = super.testValue;
 
-		return this.testValue;
-	}
+		ret = ret.replace(/^@?/, '@');
 
-	get computedPrelude () {
-		if (this.def.fromParent === 'preludes') {
-			return this.id;
+		if (this.suffix) {
+			if (this.def.fromParent === 'suffixes') {
+				return this.parent.testValue + this.suffix;
+			}
+			else {
+				ret += this.suffix;
+			}
 		}
 
 		if (this.prelude) {
-			return this.prelude;
+			if (this.def.fromParent === 'preludes') {
+				return this.parent.testValue + ' ' + this.prelude;
+			}
+			else {
+				ret += ' ' + this.prelude;
+			}
 		}
 
-		if (this.def.fromParent !== 'atrules' && this.parent) {
-			return this.parent.computedPrelude;
-		}
-
-		return '';
+		return ret;
 	}
 
-	get computedSuffix () {
-		if (this.def.fromParent === 'suffixes') {
-			return this.id;
+	get atrule () {
+		if (this.def.fromParent === 'preludes' || this.def.fromParent === 'suffixes') {
+			return this.parent;
 		}
 
-		if (this.def.fromParent !== 'atrules' && this.parent) {
-			return this.parent.computedSuffix;
-		}
+		return this;
+	}
 
-		return '';
+	get computedPrelude () {
+		return this.closestValue(f => f.prelude) || '';
 	}
 
 	get contents () {
@@ -178,7 +170,9 @@ export default class CSSAtruleFeature extends Feature {
 		let parent = this.parentAtRule?.getCode();
 		let contentBefore = this.contentBefore;
 
-		let ret = supportsAtrule(this.getCode({contents: true}), {parent, contentBefore});
+		let code = this.getCode({contents: true});
+
+		let ret = supportsAtrule(code, {parent, contentBefore});
 
 		return ret;
 	}
