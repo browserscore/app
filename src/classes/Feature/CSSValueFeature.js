@@ -10,17 +10,11 @@ import CSSPropertyFeature from './CSSPropertyFeature.js';
 
 export default class CSSValueFeature extends Feature {
 	static children = {
-		tests: {},
+		...super.children,
 		properties: {
 			single: 'property',
 		},
-		args: {
-			single: 'arg',
-			getId () {
-				let fn = this.parent.closest(f => f.id.endsWith('()'));
-				return fn?.id.replace(/\(\)$/, `(${this.arg})`);
-			}
-		},
+
 		dataTypes: {
 			single: 'dataType',
 		},

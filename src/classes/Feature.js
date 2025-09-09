@@ -32,7 +32,16 @@ export default class Feature extends AbstractFeature {
 	 * Child schema
 	 * @type {Record<string, {single?: string, type: typeof Feature}>}
 	 */
-	static children = {tests: {single: 'id'}};
+	static children = {
+		tests: {},
+		args: {
+			single: 'arg',
+			getId () {
+				let fn = this.parent.closest(f => f.id.endsWith('()'));
+				return fn?.id.replace(/\(\)$/, `(${this.arg})`);
+			}
+		},
+	};
 
 	static filters = {
 		type: {
