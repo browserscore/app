@@ -99,7 +99,7 @@ export default class CSSValueFeature extends Feature {
 			return this.properties[0].id;
 		}
 
-		return this.parent.property;
+		return this.parent?.property;
 	}
 
 	set property (value) {
@@ -107,6 +107,12 @@ export default class CSSValueFeature extends Feature {
 	}
 
 	testSelf () {
+		if (!this.property) {
+			// No property to test with
+			// This can happen if none of the properties specified are supported
+			return { success: undefined, note: 'No property to test with' };
+		}
+
 		return supportsValue(this.property, this.value);
 	}
 }
