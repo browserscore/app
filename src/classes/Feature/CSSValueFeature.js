@@ -8,12 +8,8 @@ import supportsValue from '../../../../supports/src/types/css/value.js';
 
 export default class CSSValueFeature extends Feature {
 	static children = {
-		tests: {
-			type: CSSValueFeature,
-			single: 'id'
-		},
+		tests: {},
 		properties: {
-			type: CSSValueFeature,
 			single: 'property',
 		},
 	}
