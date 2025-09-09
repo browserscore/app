@@ -164,14 +164,7 @@ export default class Feature extends AbstractFeature {
 				this[singleProp] = this.def[singleProp];
 			}
 
-			let multiple;
-
-			// This is often a nested child property, so we may need to go up to find its value
-			// Just make sure you're not reading the same property on ancestors that got us here
-			multiple = this.closestValue(f => f.def[property], {
-				maxSteps: !schema.nest || this.def.fromParent === property ? 1 : nestingLevel,
-				stopIf: f => f.constructor.name === 'Spec'
-			});
+			let multiple = this.def[property];
 
 			// Is an object of ids to child defs like {id1: test1, id2: [test1, test2, ...], id3: {foo: bar, baz: qux}}
 			// Convert it to an array
