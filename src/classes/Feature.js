@@ -154,6 +154,7 @@ export default class Feature extends AbstractFeature {
 
 		for (let nestingLevel = 1; nestingLevel <= maxNestingLevel; nestingLevel++) {
 			let property = childProperties[nestingLevel - 1];
+			let propertyDescriptor = Object.getOwnPropertyDescriptor(this, property);
 			let schema = treeSchema[property];
 
 			let {single: singleProp, type: ChildType = this.constructor} = schema;
@@ -202,23 +203,21 @@ export default class Feature extends AbstractFeature {
 
 			multiple = toArray(multiple);
 
-			if (multiple.length > 0) {
-				if (this.children.length > 0 && schema.nest) {
-					// Just set plural property, the children will take care of it
-					this[property] = multiple;
-				}
-				else {
-					// Create children
-					for (let child of multiple) {
-						if (child === null || child === undefined) {
-							continue;
-						}
 
-						let childDef = typeof child === 'string' ? {id: child} : child;
-						childDef.fromParent = property;
-						let subFeature = new ChildType(childDef, this);
-						this.children.push(subFeature);
-					}
+			if (multiple.length > 0) {
+				// Create children
+				let children = [];
+				for (let child of multiple) {
+					let childDef = typeof child === 'string' ? {id: child} : child;
+					childDef.fromParent = property;
+					let subFeature = new ChildType(childDef, this);
+					children.push(subFeature);
+				}
+
+				this.children.push(...children);
+
+				if (!propertyDescriptor || (propertyDescriptor.set || propertyDescriptor.value)) {
+					this[property] = children;
 				}
 			}
 		}
