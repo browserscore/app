@@ -180,7 +180,7 @@ export default class Feature extends AbstractFeature {
 				let nextProperty = childProperties[nestingLevel];
 
 				if (!nextProperty && ChildType.children) {
-					nextProperty = Object.keys(schema.type.children)[0];
+					nextProperty = Object.keys(ChildType.children)[0];
 				}
 				let arr = [];
 
