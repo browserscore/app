@@ -90,7 +90,7 @@ export default class CSSValueFeature extends Feature {
 		}
 
 		if (this.def.fromParent === 'args' || this.arg) {
-			return this.id;
+			return this.testValue;
 		}
 
 		if (this.args) {
@@ -104,6 +104,10 @@ export default class CSSValueFeature extends Feature {
 		}
 
 		return this.id;
+	}
+
+	set value (value) {
+		this.defineProperty('value', { value, enumerable: true });
 	}
 
 	get property () {
@@ -127,7 +131,7 @@ export default class CSSValueFeature extends Feature {
 			value.toString = () => value.name;
 		}
 
-		Object.defineProperty(this, 'property', { value });
+		this.defineProperty('property', { value, enumerable: true });
 	}
 
 	testSelf () {

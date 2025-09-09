@@ -37,8 +37,7 @@ export default class Feature extends AbstractFeature {
 		args: {
 			single: 'arg',
 			getId () {
-				let fn = this.parent.closest(f => f.id.endsWith('()'));
-				return fn?.id.replace(/\(\)$/, `(${this.arg})`);
+				return this.testValue;
 			}
 		},
 	};
@@ -84,20 +83,11 @@ export default class Feature extends AbstractFeature {
 			this.tests = toArray(this.def.tests);
 		}
 
-		this._createChildren();
-
-		if (!this.id && this.constructor.children) {
-			let childSchema = this.constructor.children[this.def.fromParent];
-
-			if (childSchema.getId) {
-				try
-				{ this.id = childSchema.getId.call(this); }
-				catch (e) { debugger; }
-			}
-			if (!this.id && childSchema.single && this[childSchema.single]) {
-				this.id = this[childSchema.single];
-			}
+		if (this.def.code) {
+			this.code = this.def.code;
 		}
+
+		this._createChildren();
 
 		let childTests = this.children.length > 0 ? this.children.flatMap(c => c.score.totalTests || 0).reduce((a, b) => a + b, 0) : 0;
 		let ownTests = this.gatingTest || !childTests ? 1 : 0;
@@ -176,12 +166,19 @@ export default class Feature extends AbstractFeature {
 			let property = childProperties[nestingLevel - 1];
 			let propertyDescriptor = Object.getOwnPropertyDescriptor(this, property);
 			let schema = treeSchema[property];
-
 			let {single: singleProp, type: ChildType = this.constructor} = schema;
+
+			if (!this.id && schema.getId) {
+				this.id = schema.getId.call(this);
+			}
 
 			if (singleProp && this.def[singleProp]) {
 				// Singular property explicitly defined
 				this[singleProp] = this.def[singleProp];
+			}
+
+			if (!this.id && singleProp && this[singleProp]) {
+				this.id = this[singleProp];
 			}
 
 			let multiple = this.def[property];
@@ -199,7 +196,7 @@ export default class Feature extends AbstractFeature {
 
 				for (let id in multiple) {
 					let def = multiple[id];
-					let childDef = {id};
+					let childDef = {[singleProp || 'id']: id};
 
 					if (nextProperty && (Array.isArray(def) || typeof def === 'string')) {
 						childDef[nextProperty] = def;
@@ -236,8 +233,21 @@ export default class Feature extends AbstractFeature {
 		}
 	}
 
+	get testValue () {
+		if (this.arg) {
+			let fn = this.closest(f => f.id.endsWith('()'));
+			return fn?.id.replace(/\(\)$/, `(${this.arg})`);
+		}
+
+		return this.id;
+	}
+
 	get code () {
-		return this.def.code ?? this.id;
+		return this.id;
+	}
+
+	set code (code) {
+		this.defineProperty('code', {value: code, enumerable: true});
 	}
 
 	get draftLink () {

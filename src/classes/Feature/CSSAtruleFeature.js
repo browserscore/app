@@ -54,6 +54,7 @@ export class CSSAtruleDescriptorFeature extends Feature {
 export default class CSSAtruleFeature extends Feature {
 	static forceTotal = undefined;
 	static children = {
+		...super.children,
 		suffixes: {
 			type: CSSAtruleFeature,
 		},
@@ -122,7 +123,7 @@ export default class CSSAtruleFeature extends Feature {
 			return this.parent.name;
 		}
 
-		return this.id;
+		return this.testValue;
 	}
 
 	get computedPrelude () {
