@@ -100,13 +100,16 @@ export default class Feature extends AbstractFeature {
 			this.ownScore.totalTests = 1;
 		}
 
-		// Inline code
-		if (this.title && this.title.indexOf('`') !== this.title.lastIndexOf('`')) {
-			// Non-enumerable
-			this.defineProperty('titleMd', this.title);
-			this.defineProperty('titleHtml', this.title.replace(/</g, '&lt;').replace(/`([^`]+?)`/g, '<code>$1</code>'));
+		this.titleMd = this.def.titleMd;
 
-			this.title = this.title.replace(/`/g, '');
+		// Inline code
+		if (this.titleMd) {
+			// Non-enumerable
+			this.defineProperty('titleHtml', this.titleMd.replace(/</g, '&lt;').replace(/`([^`]+?)`/g, '<code>$1</code>'));
+
+			if (!this.title) {
+				this.title = this.titleMd.replace(/`/g, '');
+			}
 		}
 	}
 
