@@ -23,9 +23,7 @@ export default class AbstractFeature {
 			this.constructor.byId[this.id] = this;
 		}
 
-		this.defineProperties({
-			parent,
-		});
+		this.defineProperty('parent', parent);
 
 		if (def.title) {
 			this.title = def.title;
@@ -35,27 +33,24 @@ export default class AbstractFeature {
 	}
 
 	/**
-	 * Define instance properties that are non-enumerable by default
-	 * Good for computed things or cyclical references
+	 * Define an instance property that is non-enumerable by default
+	 * Good for computed things or cyclical references (to avoid serialization footguns)
 	 * @param {*} props
 	 */
-	defineProperties (props) {
+	defineProperty (key, def) {
 		let defaults = {
 			enumerable: false,
 			writable: true,
 			configurable: true,
 		};
 
-		for (let key in props) {
-			let def = props[key];
-			let isDescriptor = def && typeof def === 'object' && ('enumerable' in def || 'writable' in def || 'configurable' in def);
-			if (def === undefined || !isDescriptor) {
-				// property: value
-				def = {value: def};
-			}
-
-			Object.defineProperty(this, key, {...defaults, ...def});
+		let isDescriptor = def && typeof def === 'object' && ('enumerable' in def || 'writable' in def || 'configurable' in def);
+		if (def === undefined || !isDescriptor) {
+			// property: value
+			def = {value: def};
 		}
+
+		Object.defineProperty(this, key, {...defaults, ...def});
 	}
 
 	/** Stuff that runs when the first instance is created */

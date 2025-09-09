@@ -113,10 +113,8 @@ export default class Feature extends AbstractFeature {
 		// Inline code
 		if (this.title && this.title.indexOf('`') !== this.title.lastIndexOf('`')) {
 			// Non-enumerable
-			this.defineProperties({
-				titleMd: this.title,
-				titleHtml: this.title.replace(/</g, '&lt;').replace(/`([^`]+?)`/g, '<code>$1</code>'),
-			});
+			this.defineProperty('titleMd', this.title);
+			this.defineProperty('titleHtml', this.title.replace(/</g, '&lt;').replace(/`([^`]+?)`/g, '<code>$1</code>'));
 
 			this.title = this.title.replace(/`/g, '');
 		}
