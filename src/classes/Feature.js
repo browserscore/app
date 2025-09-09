@@ -77,6 +77,19 @@ export default class Feature extends AbstractFeature {
 
 		this._createChildren();
 
+		if (!this.id && this.constructor.children) {
+			let childSchema = this.constructor.children[this.def.fromParent];
+
+			if (childSchema.getId) {
+				try
+				{ this.id = childSchema.getId.call(this); }
+				catch (e) { debugger; }
+			}
+			if (!this.id && childSchema.single && this[childSchema.single]) {
+				this.id = this[childSchema.single];
+			}
+		}
+
 		let childTests = this.children.length > 0 ? this.children.flatMap(c => c.score.totalTests || 0).reduce((a, b) => a + b, 0) : 0;
 		let ownTests = this.gatingTest || !childTests ? 1 : 0;
 		let totalTests = childTests + ownTests;
@@ -196,12 +209,12 @@ export default class Feature extends AbstractFeature {
 
 			multiple = toArray(multiple);
 
-
 			if (multiple.length > 0) {
 				// Create children
 				let children = [];
 				for (let child of multiple) {
-					let childDef = typeof child === 'string' ? {id: child} : child;
+					let childDef = typeof child === 'string' ? {[singleProp || 'id']: child} : child;
+
 					childDef.fromParent = property;
 					let subFeature = new ChildType(childDef, this);
 					children.push(subFeature);

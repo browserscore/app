@@ -7,7 +7,6 @@ export class CSSAtruleDescriptorFeature extends Feature {
 	static children = {
 		values: {
 			type: CSSAtruleDescriptorFeature,
-			single: 'id',
 		},
 	}
 

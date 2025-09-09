@@ -3,7 +3,12 @@ import supportsProperty from '../../../../supports/src/types/css/property.js';
 import supportsValue from '../../../../supports/src/types/css/value.js';
 
 export class CSSPropertyValueFeature extends Feature {
-	static children = null;
+	static children = {
+		values: {
+			type: CSSPropertyValueFeature,
+			single: 'value',
+		},
+	}
 
 	testSelf () {
 		let property = this.parent.id;

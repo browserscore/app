@@ -16,6 +16,10 @@ export default class CSSValueFeature extends Feature {
 		},
 		args: {
 			single: 'arg',
+			getId () {
+				let fn = this.parent.closest(f => f.id.endsWith('()'));
+				return fn?.id.replace(/\(\)$/, `(${this.arg})`);
+			}
 		},
 		dataTypes: {
 			single: 'dataType',
@@ -91,12 +95,8 @@ export default class CSSValueFeature extends Feature {
 			return this.parent.value;
 		}
 
-		let fn = this.closest(f => f.id.endsWith('()'));
-		if (fn && this.def.fromParent === 'args') {
-			return fn.id.replace(/\(\)$/, `(${this.id})`);
-		}
-		else if (fn && this.arg) {
-			return fn.id.replace(/\(\)$/, `(${this.arg})`);
+		if (this.def.fromParent === 'args' || this.arg) {
+			return this.id;
 		}
 
 		if (this.args) {
@@ -122,7 +122,7 @@ export default class CSSValueFeature extends Feature {
 		}
 
 		if (this.properties) {
-			return this.properties[0].id;
+			return this.properties[0].property;
 		}
 
 		return this.parent?.property;
