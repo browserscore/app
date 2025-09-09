@@ -1,9 +1,13 @@
-import { CSSPropertyFeature, CSSValueFeature, CSSAtruleFeature, GlobalFeature } from '../classes/Feature/index.js';
+import { CSSPropertyFeature, CSSValueFeature, CSSAtruleFeature, CSSUnitFeature, GlobalFeature } from '../classes/Feature/index.js';
 
 const meta = {
 	properties: {
 		class: CSSPropertyFeature,
 		title: 'CSS Properties',
+	},
+	units: {
+		class: CSSUnitFeature,
+		title: 'CSS Units',
 	},
 	values: {
 		class: CSSValueFeature,
