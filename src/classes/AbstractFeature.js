@@ -97,7 +97,7 @@ export default class AbstractFeature {
 	}
 
 	get mdnLink () {
-		let ret = this.def.mdn ?? this.def.links?.mdn;
+		let ret = this.def.mdn;
 		return ret ? 'https://developer.mozilla.org/en-US/docs/Web/' + ret : '';
 	}
 

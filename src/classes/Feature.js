@@ -108,7 +108,7 @@ export default class Feature extends AbstractFeature {
 	_createChildren () {
 		if (this.def.children) {
 			// Explicitly defined children. This overrides the schema
-			let {children, title, code, link, links, ...def} = this.def;
+			let {children, title, code, link, ...def} = this.def;
 
 			if (Array.isArray(this.def.children)) {
 				children = children.map(child => typeof child === 'string' ? {id: child} : child);
@@ -228,7 +228,7 @@ export default class Feature extends AbstractFeature {
 	}
 
 	get draftLink () {
-		let link = this.def.links?.dev ?? this.def.link;
+		let link = this.def.link;
 
 		if (!link) {
 			return '';
@@ -250,7 +250,7 @@ export default class Feature extends AbstractFeature {
 	}
 
 	get specLink () {
-		let link = this.def.links?.tr ?? this.def.link;
+		let link = this.def.specLink ?? this.def.link;
 
 		if (!link) {
 			return '';
@@ -272,7 +272,7 @@ export default class Feature extends AbstractFeature {
 	}
 
 	get mdnLink () {
-		let link = this.def.mdn ?? this.def.links?.mdn;
+		let link = this.def.mdn;
 		if (link) {
 			return getMdnLink(link, this.id, this.def.mdnGroup)
 		}
@@ -372,7 +372,7 @@ function getMdnLink (mdn, feature, mdnGroup) {
 		default:
 			mdnLink += 'CSS/';
 			// add exception for Media Queries if no link define
-			// if (what === mediaqueries: && !links.mdn) {
+			// if (what === mediaqueries: && !mdn) {
 			// 	mdnLink += '@media/';
 			// }
 	}
