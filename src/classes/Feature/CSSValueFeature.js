@@ -20,6 +20,7 @@ export default class CSSValueFeature extends Feature {
 		dataTypes: {
 			single: 'dataType',
 		},
+		values: {},
 	}
 
 	_createChildren () {
@@ -90,12 +91,13 @@ export default class CSSValueFeature extends Feature {
 			return this.parent.value;
 		}
 
-		if (this.def.fromParent === 'args') {
-			let fn = this.closest(f => f.id.endsWith('()'));
+		let fn = this.closest(f => f.id.endsWith('()'));
+		if (fn && this.def.fromParent === 'args') {
 			return fn.id.replace(/\(\)$/, `(${this.id})`);
 		}
-
-
+		else if (fn && this.arg) {
+			return fn.id.replace(/\(\)$/, `(${this.arg})`);
+		}
 
 		if (this.args) {
 			// It's a CSS function.
@@ -127,16 +129,27 @@ export default class CSSValueFeature extends Feature {
 	}
 
 	set property (value) {
+		if (value && typeof value === 'object' && value.name) {
+			value.toString = () => value.name;
+		}
+
 		Object.defineProperty(this, 'property', { value });
 	}
 
 	testSelf () {
-		if (!this.property) {
+		let property = this.property;
+		let value = this.value;
+
+		if (!property) {
 			// No property to test with
 			// This can happen if none of the properties specified are supported
 			return { success: undefined, note: 'No property to test with' };
 		}
 
-		return supportsValue(this.property, this.value);
+		if (property?.value) {
+			value = property.value(value);
+		}
+
+		return supportsValue(property, value);
 	}
 }
