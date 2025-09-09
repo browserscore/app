@@ -168,7 +168,7 @@ export default class Feature extends AbstractFeature {
 			let schema = treeSchema[property];
 			let {single: singleProp, type: ChildType = this.constructor} = schema;
 
-			if (!this.id && schema.getId) {
+			if (!this.id && this.def[property] && schema.getId) {
 				this.id = schema.getId.call(this);
 			}
 
