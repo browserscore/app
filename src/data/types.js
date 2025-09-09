@@ -3,11 +3,11 @@ import { CSSPropertyFeature, CSSValueFeature, CSSAtruleFeature, GlobalFeature } 
 const meta = {
 	properties: {
 		class: CSSPropertyFeature,
-		title: 'Properties',
+		title: 'CSS Properties',
 	},
 	values: {
 		class: CSSValueFeature,
-		title: 'Property values',
+		title: 'CSS Property values',
 	},
 	selectors: {
 		supports: 'selector',
@@ -15,11 +15,11 @@ const meta = {
 	},
 	atrules: {
 		class: CSSAtruleFeature,
-		title: '@Rules & Descriptors',
+		title: 'CSS @Rules & their descriptors',
 	},
 	globals: {
 		class: GlobalFeature,
-		title: 'Globals',
+		title: 'JS Globals',
 	},
 	mediaqueries: {
 		supports: 'mediaQuery',
