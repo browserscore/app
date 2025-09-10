@@ -11,7 +11,7 @@ const meta = {
 	properties: {
 		class: CSSPropertyFeature,
 		title: 'CSS Properties',
-		mdn: id => `CSS/${id}`,
+		// mdn: id => `CSS/${id}`,
 		test () {
 			if (this.def.fromParent === 'values' || this.def.fromParent === 'tests') {
 				return supports.css.value(this.parent.id, this.id);
