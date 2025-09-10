@@ -4,7 +4,6 @@
  */
 import Feature from '../Feature.js';
 import supportsProperty from '../../../../supports/src/types/css/property.js';
-import supportsValue from '../../../../supports/src/types/css/value.js';
 import { dataTypes } from '../../../../supports/src/types/css/type.js';
 import CSSPropertyFeature from './CSSPropertyFeature.js';
 
