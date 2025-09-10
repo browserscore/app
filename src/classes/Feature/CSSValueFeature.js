@@ -64,7 +64,7 @@ export default class CSSValueFeature extends Feature {
 				return `<${this.id}>`;
 		}
 
-		return this.value;
+		return this.id ?? this.value;
 
 	}
 
