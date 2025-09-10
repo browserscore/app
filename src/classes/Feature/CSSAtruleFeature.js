@@ -55,10 +55,6 @@ export default class CSSAtruleFeature extends Feature {
 	static forceTotal = undefined;
 	static children = {
 		...super.children,
-		suffixes: {
-			type: CSSAtruleFeature,
-			single: 'suffix',
-		},
 		preludes: {
 			type: CSSAtruleFeature,
 			single: 'prelude',
@@ -117,15 +113,6 @@ export default class CSSAtruleFeature extends Feature {
 
 		ret = ret.replace(/^@?/, '@');
 
-		if (this.suffix) {
-			if (this.via === 'suffixes') {
-				return this.parent.testValue + this.suffix;
-			}
-			else {
-				ret += this.suffix;
-			}
-		}
-
 		if (this.prelude) {
 			if (this.via === 'preludes') {
 				return this.parent.testValue + ' ' + this.prelude;
@@ -139,7 +126,7 @@ export default class CSSAtruleFeature extends Feature {
 	}
 
 	get atrule () {
-		if (this.via === 'preludes' || this.via === 'suffixes') {
+		if (this.via === 'preludes') {
 			return this.parent;
 		}
 
