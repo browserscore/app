@@ -19,7 +19,7 @@ export class CSSAtruleDescriptorFeature extends Feature {
 	}
 
 	get name () {
-		if (this.def.fromParent === 'values') {
+		if (this.via === 'values') {
 			return this.parent.id;
 		}
 
@@ -27,7 +27,7 @@ export class CSSAtruleDescriptorFeature extends Feature {
 	}
 
 	get value () {
-		if (this.def.fromParent === 'values') {
+		if (this.via === 'values') {
 			return this.id;
 		}
 
@@ -114,7 +114,7 @@ export default class CSSAtruleFeature extends Feature {
 		ret = ret.replace(/^@?/, '@');
 
 		if (this.suffix) {
-			if (this.def.fromParent === 'suffixes') {
+			if (this.via === 'suffixes') {
 				return this.parent.testValue + this.suffix;
 			}
 			else {
@@ -123,7 +123,7 @@ export default class CSSAtruleFeature extends Feature {
 		}
 
 		if (this.prelude) {
-			if (this.def.fromParent === 'preludes') {
+			if (this.via === 'preludes') {
 				return this.parent.testValue + ' ' + this.prelude;
 			}
 			else {
@@ -135,7 +135,7 @@ export default class CSSAtruleFeature extends Feature {
 	}
 
 	get atrule () {
-		if (this.def.fromParent === 'preludes' || this.def.fromParent === 'suffixes') {
+		if (this.via === 'preludes' || this.via === 'suffixes') {
 			return this.parent;
 		}
 
@@ -151,7 +151,7 @@ export default class CSSAtruleFeature extends Feature {
 			return this.def.contents;
 		}
 
-		if (this.def.fromParent !== 'atrules' && this.parent) {
+		if (this.via !== 'atrules' && this.parent) {
 			return this.parent.contents;
 		}
 
@@ -159,7 +159,7 @@ export default class CSSAtruleFeature extends Feature {
 	}
 
 	get parentAtRule () {
-		if (this.def.fromParent === 'atrules' && this.parent instanceof this.constructor) {
+		if (this.via === 'atrules' && this.parent instanceof this.constructor) {
 			return this.parent;
 		}
 

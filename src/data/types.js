@@ -13,7 +13,7 @@ const meta = {
 		title: 'CSS Properties',
 		// mdn: id => `CSS/${id}`,
 		test () {
-			if (this.def.fromParent === 'values' || this.def.fromParent === 'tests') {
+			if (this.via === 'values' || this.via === 'tests') {
 				return supports.css.value(this.parent.id, this.id);
 			}
 

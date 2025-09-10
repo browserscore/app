@@ -16,15 +16,15 @@ export class MemberFeature extends Feature {
 	}
 
 	get memberType () {
-		return this.def.fromParent === 'instanceof' ? this.parent.def.fromParent : this.def.fromParent;
+		return this.via === 'instanceof' ? this.parent.def.via : this.via;
 	}
 
 	get code () {
-		if (this.def.fromParent === 'functions' || this.def.fromParent === 'methods') {
+		if (this.via === 'functions' || this.via === 'methods') {
 			return this.id + '()';
 		}
 
-		if (this.def.fromParent === 'instanceof') {
+		if (this.via === 'instanceof') {
 			return 'instanceof ' + this.id;
 		}
 
@@ -34,7 +34,7 @@ export class MemberFeature extends Feature {
 	testSelf () {
 		let options = {};
 
-		let isInstanceOf = this.def.fromParent === 'instanceof';
+		let isInstanceOf = this.via === 'instanceof';
 		let memberType = this.memberType;
 
 		options.path = memberType === 'properties' || memberType === 'functions' ? '' : 'prototype';
@@ -75,11 +75,11 @@ export default class GlobalFeature extends Feature {
 	static gatingTest = true;
 
 	get code () {
-		if (this.def.fromParent === 'extends') {
+		if (this.via === 'extends') {
 			return 'extends ' + this.id;
 		}
 
-		if (this.def.fromParent === 'instanceof') {
+		if (this.via === 'instanceof') {
 			return 'instanceof ' + this.id;
 		}
 
@@ -90,7 +90,7 @@ export default class GlobalFeature extends Feature {
 	 * Get the GlobalFeature that contains the actual interface these are testing stuff in
 	 */
 	get base () {
-		if (this.def.fromParent === 'extends') {
+		if (this.via === 'extends') {
 			return this.parent;
 		}
 
@@ -98,14 +98,14 @@ export default class GlobalFeature extends Feature {
 	}
 
 	testSelf () {
-		if (this.def.fromParent === 'extends') {
+		if (this.via === 'extends') {
 			let SuperClass = this.id;
 			let Class = this.parent.id;
 
 			return testExtends(Class, SuperClass);
 		}
 
-		if (this.def.fromParent === 'instanceof') {
+		if (this.via === 'instanceof') {
 			let Class = this.id;
 			let name = this.parent.id;
 

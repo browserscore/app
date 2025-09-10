@@ -58,7 +58,7 @@ export default class CSSValueFeature extends Feature {
 	get code () {
 		// TODO figure out when to show the property name too and return
 		// return `${this.property}: ${this.value}`;
-		switch (this.def.fromParent) {
+		switch (this.via) {
 			case 'properties':
 				return this.property;
 			case 'dataTypes':
@@ -70,7 +70,7 @@ export default class CSSValueFeature extends Feature {
 	}
 
 	get dataType () {
-		if (this.def.fromParent === 'dataTypes') {
+		if (this.via === 'dataTypes') {
 			return this.id;
 		}
 
@@ -86,11 +86,11 @@ export default class CSSValueFeature extends Feature {
 	}
 
 	get value () {
-		if (this.def.fromParent === 'properties' || this.def.fromParent === 'dataTypes') {
+		if (this.via === 'properties' || this.via === 'dataTypes') {
 			return this.parent.value;
 		}
 
-		if (this.def.fromParent === 'args' || this.arg) {
+		if (this.via === 'args' || this.arg) {
 			return this.testValue;
 		}
 
@@ -116,7 +116,7 @@ export default class CSSValueFeature extends Feature {
 			return this.def.property;
 		}
 
-		if (this.def.fromParent === 'properties') {
+		if (this.via === 'properties') {
 			return this.id;
 		}
 

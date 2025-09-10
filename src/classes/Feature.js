@@ -145,7 +145,7 @@ export default class Feature extends AbstractFeature {
 				delete childDef.isGroup;
 
 				Object.assign(childDef, child);
-				childDef.fromParent = 'children';
+				childDef.via = 'children';
 				let subFeature = new this.constructor(childDef, this);
 				this.children.push(subFeature);
 			}
@@ -221,7 +221,7 @@ export default class Feature extends AbstractFeature {
 				for (let child of multiple) {
 					let childDef = typeof child === 'string' ? {[singleProp || 'id']: child} : child;
 
-					childDef.fromParent = property;
+					childDef.via = property;
 					let subFeature = new ChildType(childDef, this);
 					children.push(subFeature);
 				}
@@ -233,6 +233,10 @@ export default class Feature extends AbstractFeature {
 				}
 			}
 		}
+	}
+
+	get via () {
+		return this.def.via;
 	}
 
 	get testValue () {
