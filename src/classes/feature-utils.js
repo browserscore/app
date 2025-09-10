@@ -25,16 +25,13 @@ export function createFeatures (all, props = {}) {
 				feature[key] = groupProps[key];
 			}
 
-			if (feature.id) {
-				if (feature.title) {
-					feature.code = id;
-				}
-				else {
-					feature.title = id;
-				}
-			}
-			else {
-				feature.id = id;
+			let hasId = feature.id;
+			let hasTitle = feature.title || feature.titleMd;
+			let hasCode = feature.code;
+			let keyProperty = !hasId ? 'id' : (!hasCode ? 'code' : (!hasTitle ? 'title' : null));
+
+			if (keyProperty) {
+				feature[keyProperty] = id;
 			}
 
 			let Class = meta[type]?.class ?? Feature;

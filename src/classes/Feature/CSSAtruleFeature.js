@@ -108,6 +108,10 @@ export default class CSSAtruleFeature extends Feature {
 		return this.getCode();
 	}
 
+	set code (value) {
+		super.code = value;
+	}
+
 	get testValue () {
 		let ret = super.testValue;
 
