@@ -1,5 +1,11 @@
 import { CSSPropertyFeature, CSSValueFeature, CSSAtruleFeature, GlobalFeature } from '../classes/Feature/index.js';
-import supports from '../supports.js';
+import { IS_DEV } from '../util.js';
+import * as supports from '../../../supports/src/index.js';
+export { supports };
+
+if (IS_DEV) {
+	window.supports = supports;
+}
 
 const meta = {
 	properties: {

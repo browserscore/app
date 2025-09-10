@@ -3,8 +3,7 @@
  * May or may not have children
  */
 
-import featureTypes from '../data/types.js';
-import Supports from '../supports.js';
+import featureTypes, { supports } from '../data/types.js';
 import AbstractFeature from './AbstractFeature.js';
 import { toArray, mapObject } from '../util.js';
 import Spec from './Spec.js';
@@ -344,7 +343,7 @@ export default class Feature extends AbstractFeature {
 		let testCallback = this.def.test ?? featureType.test;
 
 		if (typeof testCallback === 'string') {
-			testCallback = Supports[testCallback];
+			testCallback = supports[testCallback];
 		}
 
 		if (!testCallback) {
