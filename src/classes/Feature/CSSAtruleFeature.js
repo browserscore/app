@@ -1,55 +1,6 @@
 import Feature from '../Feature.js';
 import supportsAtrule from '../../../../supports/src/types/css/atrule.js';
-import supportsDescriptor from '../../../../supports/src/types/css/descriptor.js';
-import supportsDescriptorValue from '../../../../supports/src/types/css/descriptor-value.js';
-
-export class CSSAtruleDescriptorFeature extends Feature {
-	static children = {
-		values: {
-			type: CSSAtruleDescriptorFeature,
-		},
-	}
-
-	get atrule () {
-		if (this.parent instanceof this.constructor) {
-			return this.parent.atrule;
-		}
-
-		return this.parent;
-	}
-
-	get name () {
-		if (this.via === 'values') {
-			return this.parent.id;
-		}
-
-		return this.id ?? this.parent.id;
-	}
-
-	get value () {
-		if (this.via === 'values') {
-			return this.id;
-		}
-
-		if (!(this.parent instanceof this.constructor)) {
-			return undefined;
-		}
-
-		return this.parent.value;
-	}
-
-	testSelf () {
-		let descriptor = this.name;
-		let value = this.value;
-		let atrule = this.atrule?.getCode();
-
-		if (value) {
-			return supportsDescriptorValue(descriptor, value, atrule);
-		}
-
-		return supportsDescriptor(descriptor, atrule);
-	}
-}
+import CSSDescriptorFeature from './CSSDescriptorFeature.js';
 
 export default class CSSAtruleFeature extends Feature {
 	static forceTotal = undefined;
@@ -60,7 +11,7 @@ export default class CSSAtruleFeature extends Feature {
 			single: 'prelude',
 		},
 		descriptors: {
-			type: CSSAtruleDescriptorFeature,
+			type: CSSDescriptorFeature,
 		},
 		/** Child @-rules that are only valid within this @-rule */
 		atrules: {
