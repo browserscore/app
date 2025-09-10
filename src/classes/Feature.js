@@ -350,8 +350,16 @@ export default class Feature extends AbstractFeature {
 			throw new Error(`No test callback found for feature type ${this.type}`);
 		}
 
-		let test = this.tests?.[0] ?? this.id;
-		test = test?.id ?? test; // test must be a string
+		let test;
+		if (!this.gatingTest && this.tests?.length) {
+			// Old style tests
+			test = this.tests[0];
+			test = test?.id ?? test; // test must be a string
+		}
+		else {
+			test = this.testValue ?? this.id;
+		}
+
 		return testCallback.call(this, test, this.id, this) ?? {};
 	}
 

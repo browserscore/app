@@ -54,10 +54,4 @@ export default class CSSPropertyFeature extends Feature {
 			}
 		}
 	}
-
-	testSelf () {
-		// Has no values
-		let property = this.id;
-		return supportsProperty(property);
-	}
 }
