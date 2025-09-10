@@ -86,6 +86,13 @@ export default class Feature extends AbstractFeature {
 			this.code = this.def.code;
 		}
 
+		if (!this.id && this.via) {
+			let schema = this.constructor.children[this.via];
+			if (schema && schema.single && this.def[schema.single]) {
+				this.id = this.def[schema.single];
+			}
+		}
+
 		this._createChildren();
 
 		let childTests = this.children.length > 0 ? this.children.flatMap(c => c.score.totalTests || 0).reduce((a, b) => a + b, 0) : 0;
@@ -121,17 +128,19 @@ export default class Feature extends AbstractFeature {
 		if (this.def.children) {
 			// Explicitly defined children. This overrides the schema
 			let {children, title, titleMd, code, link, ...def} = this.def;
+			let idProp = this.constructor.children[this.via]?.single ?? 'id';
 
 			if (Array.isArray(this.def.children)) {
-				children = children.map(child => typeof child === 'string' ? {id: child} : child);
+				children = children.map(child => typeof child === 'string' ? {[idProp]: child} : child);
 			}
 			else {
 				// id -> child def
-				children = Object.entries(children).map(([id, child]) => ({...child, id}));
+				children = Object.entries(children).map(([id, child]) => ({...child, [idProp]: id}));
 			}
 
 			for (let child of children) {
 				// Because the class is not necessarily built to handle children, we copy the parent def over
+
 				let childDef = {...def, ...child};
 				childDef.id = child.id ?? def.id;
 
@@ -145,7 +154,7 @@ export default class Feature extends AbstractFeature {
 				delete childDef.isGroup;
 
 				Object.assign(childDef, child);
-				childDef.via = 'children';
+				childDef.via = this.via || 'children';
 				let subFeature = new this.constructor(childDef, this);
 				this.children.push(subFeature);
 			}
@@ -166,17 +175,9 @@ export default class Feature extends AbstractFeature {
 			let schema = treeSchema[property];
 			let {single: singleProp, type: ChildType = this.constructor} = schema;
 
-			if (!this.id && this.def[property] && schema.getId) {
-				this.id = schema.getId.call(this);
-			}
-
 			if (singleProp && this.def[singleProp]) {
 				// Singular property explicitly defined
 				this[singleProp] = this.def[singleProp];
-			}
-
-			if (!this.id && singleProp && this[singleProp]) {
-				this.id = this[singleProp];
 			}
 
 			let multiple = this.def[property];
