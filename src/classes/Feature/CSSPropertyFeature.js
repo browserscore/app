@@ -1,34 +1,12 @@
 import Feature from '../Feature.js';
-import supportsProperty from '../../../../supports/src/types/css/property.js';
-import supportsValue from '../../../../supports/src/types/css/value.js';
-
-export class CSSPropertyValueFeature extends Feature {
-	static children = {
-		values: {
-			type: CSSPropertyValueFeature,
-			single: 'value',
-		},
-	}
-
-	testSelf () {
-		let property = this.parent.id;
-		let value = this.id;
-		return supportsValue(property, value);
-	}
-}
-
 
 export default class CSSPropertyFeature extends Feature {
 	static children = {
 		/** @deprecated */
-		tests: {
-			type: CSSPropertyValueFeature,
-		},
+		tests: { single: 'value' },
 
-		values: {
-			type: CSSPropertyValueFeature,
-			single: 'value',
-		},
+		/** Values to test against the property */
+		values: { single: 'value' },
 	}
 	static gatingTest = true;
 

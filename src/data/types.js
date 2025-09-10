@@ -12,7 +12,13 @@ const meta = {
 		class: CSSPropertyFeature,
 		title: 'CSS Properties',
 		mdn: id => `CSS/${id}`,
-		test: 'cssProperty',
+		test () {
+			if (this.def.fromParent === 'values' || this.def.fromParent === 'tests') {
+				return supports.css.value(this.parent.id, this.id);
+			}
+
+			return supports.css.property(this.id);
+		},
 	},
 	units: {
 		title: 'CSS Units',
