@@ -6,18 +6,18 @@ const meta = {
 		class: CSSPropertyFeature,
 		title: 'CSS Properties',
 		mdn: id => `CSS/${id}`,
-		supports: 'cssProperty',
+		test: 'cssProperty',
 	},
 	units: {
 		title: 'CSS Units',
-		supports () {
+		test () {
 			return supports.css.unit(this.id, this.def.dataType)
 		},
 	},
 	values: {
 		class: CSSValueFeature,
 		title: 'CSS Property values',
-		supports () {
+		test () {
 			let property = this.property;
 			let value = this.value;
 
@@ -37,20 +37,20 @@ const meta = {
 	},
 	selectors: {
 		title: 'Selectors',
-		supports: 'cssSelector',
+		test: 'cssSelector',
 	},
 	atrules: {
 		class: CSSAtruleFeature,
 		title: 'CSS @Rules & their descriptors',
-		supports: 'cssAtrule',
+		test: 'cssAtrule',
 	},
 	globals: {
 		class: GlobalFeature,
 		title: 'JS Globals',
-		supports: 'jsGlobal',
+		test: 'jsGlobal',
 	},
 	mediaqueries: {
-		supports: 'mediaQuery',
+		test: 'mediaQuery',
 		title: 'Media queries',
 	},
 };

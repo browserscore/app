@@ -341,7 +341,7 @@ export default class Feature extends AbstractFeature {
 	 */
 	testSelf () {
 		let featureType = featureTypes[this.type];
-		let testCallback = this.def.supports ?? featureType.supports;
+		let testCallback = this.def.test ?? featureType.test;
 
 		if (typeof testCallback === 'string') {
 			testCallback = Supports[testCallback];
