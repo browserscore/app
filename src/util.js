@@ -1,8 +1,15 @@
 import { toArray } from "../../supports/src/util.js";
 export { toArray };
 
+import * as debug from './util/debug.js';
+export * from './util/debug.js';
+
 export const IS_DEV = (location.hostname === 'localhost' || location.search.includes('env=dev')) && !location.search.includes('env=prod');
 const classes = ['epic-fail', 'fail', 'very-buggy', 'buggy', 'slightly-buggy', 'almost-pass', 'pass'];
+
+if (IS_DEV) {
+	window.Debug = debug;
+}
 
 export function passclass(info) {
 	if (info === undefined || info === null) {
