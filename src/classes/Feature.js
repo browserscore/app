@@ -298,10 +298,34 @@ export default class Feature extends AbstractFeature {
 	}
 
 	get mdnLink () {
-		let link = this.def.mdn;
-		if (link) {
-			return getMdnLink(link, this.id, this.def.mdnGroup)
+		let mdn = this.def.mdn;
+		let mdnGroup = this.closestValue(f => f.def.mdnGroup);
+
+		if (mdn || mdnGroup && this.forceTotal === 1) {
+			let feature = this.id;
+			let mdnLink = 'https://developer.mozilla.org/en-US/docs/Web/';
+
+			switch (mdnGroup) {
+				case 'SVG':
+					// TODO what about other parts of SVG?
+					mdnLink += 'SVG/Attribute/';
+					break;
+				case 'DOM':
+					mdnLink += 'API/';
+					break;
+				default:
+					mdnLink += 'CSS/';
+					// add exception for Media Queries if no link define
+					if (this.type === 'mediaqueries' && !mdn) {
+						mdnLink += '@media/';
+					}
+			}
+
+			mdnLink += mdn ?? feature.replace('()', '').replace(/(@[^ \/]+)[^\/]*(\/.*)/, '$1$2');
+			return mdnLink;
+
 		}
+
 		return '';
 	}
 
@@ -385,24 +409,4 @@ export default class Feature extends AbstractFeature {
 	}
 }
 
-function getMdnLink (mdn, feature, mdnGroup) {
-	let mdnLink = 'https://developer.mozilla.org/en-US/docs/Web/';
 
-	switch (mdnGroup) {
-		case 'SVG':
-			mdnLink += 'SVG/Attribute/';
-			break;
-		case 'DOM':
-			mdnLink += 'API/';
-			break;
-		default:
-			mdnLink += 'CSS/';
-			// add exception for Media Queries if no link define
-			// if (what === mediaqueries: && !mdn) {
-			// 	mdnLink += '@media/';
-			// }
-	}
-
-	mdnLink += mdn ?? feature.replace('()', '').replace(/(@[^ \/]+)[^\/]*(\/.*)/, '$1$2');
-	return mdnLink;
-}
