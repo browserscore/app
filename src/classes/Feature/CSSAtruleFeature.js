@@ -34,7 +34,7 @@ export default class CSSAtruleFeature extends Feature {
 	get gatingTest () {
 		// In some @rules (e.g. @property) a missing prelude is a parse error
 		// So we can't use the plain @rule as a gating test
-		return !this.preludeRequired || Boolean(this.computedPrelude);
+		return !this.preludeRequired || Boolean(this.prelude);
 	}
 
 	getCode (o = {}) {
@@ -60,17 +60,13 @@ export default class CSSAtruleFeature extends Feature {
 	}
 
 	get testValue () {
-		let ret = super.testValue;
+		let atrule = this.atrule;
+		let ret = atrule === this ? super.testValue : atrule.testValue;
 
 		ret = ret.replace(/^@?/, '@');
 
 		if (this.prelude) {
-			if (this.via === 'preludes') {
-				return this.parent.testValue + ' ' + this.prelude;
-			}
-			else {
-				ret += ' ' + this.prelude;
-			}
+			ret += ' ' + this.prelude;
 		}
 
 		return ret;
@@ -78,14 +74,17 @@ export default class CSSAtruleFeature extends Feature {
 
 	get atrule () {
 		if (this.via === 'preludes') {
-			return this.parent;
+			return this.parent.atrule;
 		}
 
 		return this;
 	}
 
-	get computedPrelude () {
-		return this.closestValue(f => f.prelude) || '';
+	get prelude () {
+		return this.def.prelude ?? this.parent?.prelude ?? '';
+	}
+	set prelude (value) {
+		this.defineProperty('prelude', {value, enumerable: true});
 	}
 
 	get contents () {
