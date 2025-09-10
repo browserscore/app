@@ -340,21 +340,20 @@ export default class Feature extends AbstractFeature {
 	 * @returns {{success: number, note?: string, prefix?: string, name?: string}}
 	 */
 	testSelf () {
-		let supportsName = featureTypes[this.type]?.supports ?? this.type;
-		let testCallback = Supports[supportsName];
+		let featureType = featureTypes[this.type];
+		let testCallback = this.def.supports ?? featureType.supports;
+
+		if (typeof testCallback === 'string') {
+			testCallback = Supports[testCallback];
+		}
 
 		if (!testCallback) {
-			supportsName = supportsName[0].toUpperCase() + supportsName.slice(1);
-			testCallback = Supports[`css${supportsName}`] ?? Supports[`js${supportsName}`] ?? Supports[`html${supportsName}`];
-
-			if (!testCallback) {
-				return null;
-			}
+			throw new Error(`No test callback found for feature type ${this.type}`);
 		}
 
 		let test = this.tests?.[0] ?? this.id;
 		test = test?.id ?? test; // test must be a string
-		return testCallback(test, this.id, this) ?? {};
+		return testCallback.call(this, test, this.id, this) ?? {};
 	}
 
 	get gatingTest () {

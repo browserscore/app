@@ -135,21 +135,4 @@ export default class CSSValueFeature extends Feature {
 
 		this.defineProperty('property', { value, enumerable: true });
 	}
-
-	testSelf () {
-		let property = this.property;
-		let value = this.value;
-
-		if (!property) {
-			// No property to test with
-			// This can happen if none of the properties specified are supported
-			return { success: undefined, note: 'No property to test with' };
-		}
-
-		if (property?.value) {
-			value = property.value(value);
-		}
-
-		return supportsValue(property, value);
-	}
 }
