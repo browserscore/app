@@ -121,7 +121,7 @@ export default class Feature extends AbstractFeature {
 	_createChildren () {
 		if (this.def.children) {
 			// Explicitly defined children. This overrides the schema
-			let {children, title, code, link, ...def} = this.def;
+			let {children, title, titleMd, code, link, ...def} = this.def;
 
 			if (Array.isArray(this.def.children)) {
 				children = children.map(child => typeof child === 'string' ? {id: child} : child);
