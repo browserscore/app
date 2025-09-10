@@ -187,33 +187,19 @@ export default class Feature extends AbstractFeature {
 
 			// Is an object of ids to child defs like {id1: test1, id2: [test1, test2, ...], id3: {foo: bar, baz: qux}}
 			// Convert it to an array
-			if (multiple && typeof multiple === 'object' && !Array.isArray(multiple)) {
-				// Property to "unroll" child values into
-				let nextProperty = childProperties[nestingLevel];
-
-				if (!nextProperty && ChildType.children) {
-					nextProperty = Object.keys(ChildType.children)[0];
-				}
-				let arr = [];
-
-				for (let id in multiple) {
-					let def = multiple[id];
-					let childDef = {[singleProp || 'id']: id};
-
-					if (nextProperty && (Array.isArray(def) || typeof def === 'string')) {
-						childDef[nextProperty] = def;
-					}
-					else if (def && typeof def === 'object') {
-						Object.assign(childDef, def);
-					}
-
-					arr.push(childDef);
-				}
-
-				multiple = arr;
+			if (Array.isArray(multiple)) {
+				// Nothing to do
 			}
-
-			multiple = toArray(multiple);
+			else if (multiple === undefined || multiple === null) {
+				multiple = [];
+			}
+			else if (typeof multiple === 'object') {
+				// Convert object to array
+				multiple = Object.entries(multiple).map(([id, def]) => ({[singleProp || 'id']: id, ...def}));
+			}
+			else {
+				multiple = [multiple];
+			}
 
 			if (multiple.length > 0) {
 				// Create children
