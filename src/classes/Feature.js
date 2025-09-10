@@ -161,11 +161,7 @@ export default class Feature extends AbstractFeature {
 			return;
 		}
 
-		let childProperties = Object.keys(treeSchema);
-		let maxNestingLevel = childProperties.length;
-
-		for (let nestingLevel = 1; nestingLevel <= maxNestingLevel; nestingLevel++) {
-			let property = childProperties[nestingLevel - 1];
+		for (let property in treeSchema) {
 			let propertyDescriptor = Object.getOwnPropertyDescriptor(this, property);
 			let schema = treeSchema[property];
 			let {single: singleProp, type: ChildType = this.constructor} = schema;
@@ -203,14 +199,11 @@ export default class Feature extends AbstractFeature {
 
 			if (multiple.length > 0) {
 				// Create children
-				let children = [];
-				for (let child of multiple) {
+				let children = multiple.map(child => {
 					let childDef = typeof child === 'string' ? {[singleProp || 'id']: child} : child;
-
 					childDef.via = property;
-					let subFeature = new ChildType(childDef, this);
-					children.push(subFeature);
-				}
+					return new ChildType(childDef, this);
+				});
 
 				this.children.push(...children);
 
