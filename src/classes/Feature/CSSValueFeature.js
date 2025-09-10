@@ -18,7 +18,9 @@ export default class CSSValueFeature extends Feature {
 		dataTypes: {
 			single: 'dataType',
 		},
-		values: {},
+		values: {
+			single: 'value',
+		},
 	}
 
 	_createChildren () {
