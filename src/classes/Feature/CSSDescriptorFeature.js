@@ -9,6 +9,18 @@ export default class CSSAtruleDescriptorFeature extends Feature {
 		},
 	}
 
+	get uid () {
+		let atrule = this.atrule?.code;
+		let value = this.value;
+		let ret = atrule + '/' + this.name;
+
+		if (value) {
+			ret += '/' + value;
+		}
+
+		return ret;
+	}
+
 	get atrule () {
 		if (this.parent instanceof this.constructor) {
 			return this.parent.atrule;

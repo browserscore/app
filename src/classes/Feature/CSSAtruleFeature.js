@@ -59,6 +59,16 @@ export default class CSSAtruleFeature extends Feature {
 		super.code = value;
 	}
 
+	get uid () {
+		let parent = this.parentAtRule?.code;
+
+		if (parent) {
+			return parent + '/' + this.code;
+		}
+
+		return this.code;
+	}
+
 	get testValue () {
 		let atrule = this.atrule;
 		let ret = atrule === this ? super.testValue : atrule.testValue;
