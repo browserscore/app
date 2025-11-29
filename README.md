@@ -14,3 +14,15 @@ Head over to the [tests README](tests/README.md) for more information on it.
 
 - Don't add specs when there are NO implementations of ANYTHING in the spec.
 - Don't add tests that already exist, just with different values. E.g. if `calc(1px + 2px)` is a testcase, adding `calc(2px + 2px)` won't help.
+
+## How to test locally
+
+The code is split across three repos:
+
+- `app` (this repo): App UI
+- [`features`](https://github.com/browserscore/features): The feature data (specs, features, tests, etc.)
+- [`supports`](https://github.com/browserscore/supports): Code to test support for certain CSS, JS, HTML syntax
+
+The app links to the `features` and `supports` repos by using links that go _outside_ the app directory (i.e. `../features` and `../supports`).
+On the remote website, these are rewritten to correct links via the [`_redirects`](_redirects) file.
+This means that to work locally, you need to clone the `features` and `supports` repos adjacent to the `app` repo.
