@@ -413,3 +413,9 @@ export default class Feature extends AbstractFeature {
 		this.score.recalc();
 	}
 
+	toJSON () {
+		let ret = super.toJSON();
+		let { score, code } = this;
+		return { ...ret, score, code };
+	}
+}

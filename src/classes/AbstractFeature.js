@@ -197,6 +197,12 @@ export default class AbstractFeature {
 		return true;
 	}
 
+	toJSON () {
+		let { id, title, children } = this;
+		children = children ? children.map(child => child.toJSON()) : undefined;
+		return { id, title, children };
+	}
+
 	/** Get base class this extends from */
 	static get parent () {
 		if (this === AbstractFeature) {

@@ -129,3 +129,9 @@
 	margin-inline-start: 2em;
 	font-size: max(var(--font-size-xs), 85%);
 }
+
+/* Just raw JSON so that in-page search actually works */
+.feature-children.empty {
+	opacity: 0;
+	white-space: pre-line;
+}

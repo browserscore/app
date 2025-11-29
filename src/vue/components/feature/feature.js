@@ -3,6 +3,16 @@
  */
 import { IS_DEV, passclass, round, percent, log } from '../../../util.js';
 
+// Supports hidden=until-found?
+let SUPPORTS_HIDDEN_UNTIL_FOUND = false;
+
+if ('hidden' in HTMLElement.prototype) {
+	let dummy = document.createElement('div');
+	dummy.hidden = 'until-found';
+	// If not supported it will revert to `true`
+	SUPPORTS_HIDDEN_UNTIL_FOUND = dummy.hidden === 'until-found';
+}
+
 export default {
 	props: {
 		feature: {
@@ -33,6 +43,8 @@ export default {
 
 	created () {
 		this.open = this.everOpened = this.defaultOpen;
+		// Set hidden to this to ONLY hide if hidden=until-found is supported
+		this.untilFound = SUPPORTS_HIDDEN_UNTIL_FOUND ? 'until-found' : null;
 	},
 
 	mounted () {

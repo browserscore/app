@@ -115,14 +115,25 @@
 
 					<span class="count" v-if="showFeatureCount">{{ feature.score.total }}</span>
 				</component>
-				<div v-if="renderedChildren.length > 0" class="feature-children">
-					<bs-feature
-						v-for="child, index of renderedChildren"
-						:parent="feature"
-						:feature="child"
-						:key="child.uid"
-						:level="level + 1"
-					></bs-feature>
+				<div
+					v-if="feature.children.length > 0"
+					class="feature-children"
+					:class="{empty: renderedChildren.length === 0}"
+					:hidden="renderedChildren.length > 0 ? false : untilFound"
+					@beforematch="everOpened = true"
+				>
+					<template v-if="renderedChildren.length > 0">
+						<bs-feature
+							v-for="child, index of renderedChildren"
+							:parent="feature"
+							:feature="child"
+							:key="child.uid"
+							:level="level + 1"
+						></bs-feature>
+					</template>
+					<template v-else>
+						{{ feature.children.map(child => JSON.stringify(child)).join('\n') }}
+					</template>
 				</div>
 			</wrap-if>
 		</template>
