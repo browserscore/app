@@ -20,11 +20,13 @@ import Score from './Score.js';
 export default class Feature extends AbstractFeature {
 	species = 'Feature';
 
-	forceTotal = (
-		this.def.forceTotal
-		?? (this.def.isGroup !== false && (this.def.isGroup || this.def.children) ? false : undefined)
-		?? this.constructor.forceTotal
-	) || undefined; // false → undefined
+	forceTotal =
+		(this.def.forceTotal ??
+			(this.def.isGroup !== false && (this.def.isGroup || this.def.children)
+				? false
+				: undefined) ??
+			this.constructor.forceTotal) ||
+		undefined; // false → undefined
 	static forceTotal = 1;
 
 	/**
@@ -37,7 +39,7 @@ export default class Feature extends AbstractFeature {
 			single: 'arg',
 			getId () {
 				return this.testValue;
-			}
+			},
 		},
 	};
 
@@ -71,7 +73,7 @@ export default class Feature extends AbstractFeature {
 				return filterSpec.matches.call(this.spec, filter);
 			},
 		})),
-	}
+	};
 
 	constructor (def, parent) {
 		super(def, parent);
@@ -95,10 +97,13 @@ export default class Feature extends AbstractFeature {
 
 		this._createChildren();
 
-		let childTests = this.children.length > 0 ? this.children.flatMap(c => c.score.totalTests || 0).reduce((a, b) => a + b, 0) : 0;
+		let childTests =
+			this.children.length > 0
+				? this.children.flatMap(c => c.score.totalTests || 0).reduce((a, b) => a + b, 0)
+				: 0;
 		let ownTests = this.gatingTest || !childTests ? 1 : 0;
 		let totalTests = childTests + ownTests;
-		this.score.set({totalTests});
+		this.score.set({ totalTests });
 
 		if (this.gatingTest && this.children.length > 0) {
 			this.ownScore = new Score(this);
@@ -111,7 +116,10 @@ export default class Feature extends AbstractFeature {
 		// Inline code
 		if (this.titleMd) {
 			// Non-enumerable
-			this.defineProperty('titleHtml', this.titleMd.replace(/</g, '&lt;').replace(/`([^`]+?)`/g, '<code>$1</code>'));
+			this.defineProperty(
+				'titleHtml',
+				this.titleMd.replace(/</g, '&lt;').replace(/`([^`]+?)`/g, '<code>$1</code>'),
+			);
 
 			if (!this.title) {
 				this.title = this.titleMd.replace(/`/g, '');
@@ -127,21 +135,25 @@ export default class Feature extends AbstractFeature {
 	_createChildren () {
 		if (this.def.children) {
 			// Explicitly defined children. This overrides the schema
-			let {children, title, titleMd, code, link, ...def} = this.def;
+			let { children, title, titleMd, code, link, ...def } = this.def;
 			let idProp = this.constructor.children[this.via]?.single ?? 'id';
 
 			if (Array.isArray(this.def.children)) {
-				children = children.map(child => typeof child === 'string' ? {[idProp]: child} : child);
+				children = children.map(child =>
+					typeof child === 'string' ? { [idProp]: child } : child);
 			}
 			else {
 				// id -> child def
-				children = Object.entries(children).map(([id, child]) => ({...child, [idProp]: id}));
+				children = Object.entries(children).map(([id, child]) => ({
+					...child,
+					[idProp]: id,
+				}));
 			}
 
 			for (let child of children) {
 				// Because the class is not necessarily built to handle children, we copy the parent def over
 
-				let childDef = {...def, ...child};
+				let childDef = { ...def, ...child };
 				childDef.id = child.id ?? def.id;
 
 				if (!child.id) {
@@ -173,7 +185,7 @@ export default class Feature extends AbstractFeature {
 		for (let property in treeSchema) {
 			let propertyDescriptor = Object.getOwnPropertyDescriptor(this, property);
 			let schema = treeSchema[property];
-			let {single: singleProp, type: ChildType = this.constructor} = schema;
+			let { single: singleProp, type: ChildType = this.constructor } = schema;
 
 			if (singleProp && this.def[singleProp]) {
 				// Singular property explicitly defined
@@ -192,7 +204,10 @@ export default class Feature extends AbstractFeature {
 			}
 			else if (typeof multiple === 'object') {
 				// Convert object to array
-				multiple = Object.entries(multiple).map(([id, def]) => ({[singleProp || 'id']: id, ...def}));
+				multiple = Object.entries(multiple).map(([id, def]) => ({
+					[singleProp || 'id']: id,
+					...def,
+				}));
 			}
 			else {
 				multiple = [multiple];
@@ -201,14 +216,15 @@ export default class Feature extends AbstractFeature {
 			if (multiple.length > 0) {
 				// Create children
 				let children = multiple.map(child => {
-					let childDef = typeof child === 'string' ? {[singleProp || 'id']: child} : child;
+					let childDef =
+						typeof child === 'string' ? { [singleProp || 'id']: child } : child;
 					childDef.via = property;
 					return new ChildType(childDef, this);
 				});
 
 				this.children.push(...children);
 
-				if (!propertyDescriptor || (propertyDescriptor.set || propertyDescriptor.value)) {
+				if (!propertyDescriptor || propertyDescriptor.set || propertyDescriptor.value) {
 					this[property] = children;
 				}
 			}
@@ -233,7 +249,7 @@ export default class Feature extends AbstractFeature {
 	}
 
 	set code (code) {
-		this.defineProperty('code', {value: code, enumerable: true});
+		this.defineProperty('code', { value: code, enumerable: true });
 	}
 
 	get draftLink () {
@@ -284,7 +300,7 @@ export default class Feature extends AbstractFeature {
 		let mdn = this.def.mdn;
 		let mdnGroup = this.closestValue(f => f.def.mdnGroup);
 
-		if (mdn || mdnGroup && this.forceTotal === 1) {
+		if (mdn || (mdnGroup && this.forceTotal === 1)) {
 			let feature = this.id;
 			let mdnLink = 'https://developer.mozilla.org/en-US/docs/Web/';
 
@@ -306,7 +322,6 @@ export default class Feature extends AbstractFeature {
 
 			mdnLink += mdn ?? feature.replace('()', '').replace(/(@[^ \/]+)[^\/]*(\/.*)/, '$1$2');
 			return mdnLink;
-
 		}
 
 		return '';
@@ -397,6 +412,4 @@ export default class Feature extends AbstractFeature {
 
 		this.score.recalc();
 	}
-}
-
 

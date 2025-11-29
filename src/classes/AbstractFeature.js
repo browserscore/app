@@ -44,13 +44,16 @@ export default class AbstractFeature {
 			configurable: true,
 		};
 
-		let isDescriptor = def && typeof def === 'object' && ('enumerable' in def || 'writable' in def || 'configurable' in def);
+		let isDescriptor =
+			def &&
+			typeof def === 'object' &&
+			('enumerable' in def || 'writable' in def || 'configurable' in def);
 		if (def === undefined || !isDescriptor) {
 			// property: value
-			def = {value: def};
+			def = { value: def };
 		}
 
-		Object.defineProperty(this, key, {...defaults, ...def});
+		Object.defineProperty(this, key, { ...defaults, ...def });
 	}
 
 	/** Stuff that runs when the first instance is created */
@@ -79,7 +82,7 @@ export default class AbstractFeature {
 		this._initialized = true;
 	}
 
-	get link() {
+	get link () {
 		return this.specLink ?? this.draftLink;
 	}
 
@@ -124,7 +127,7 @@ export default class AbstractFeature {
 		return parentUid + id;
 	}
 
-	_closest (fn, {maxSteps, stopIf} = {}) {
+	_closest (fn, { maxSteps, stopIf } = {}) {
 		if (maxSteps <= 0) {
 			return null;
 		}
@@ -137,12 +140,12 @@ export default class AbstractFeature {
 
 		let result = fn(this);
 		if (result || result === 0 || result === '') {
-			return {node: this, value: result};
+			return { node: this, value: result };
 		}
 
 		if (this.parent) {
 			maxSteps = maxSteps >= 0 ? maxSteps - 1 : undefined;
-			return this.parent._closest(fn, {maxSteps, stopIf});
+			return this.parent._closest(fn, { maxSteps, stopIf });
 		}
 
 		return null;

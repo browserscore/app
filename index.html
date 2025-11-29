@@ -1,162 +1,292 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+	<head>
+		<meta charset="utf-8" />
+		<title>Browser Score</title>
+		<link rel="icon" href="ui/logo.svg" id="favicon" />
+		<link rel="stylesheet" href="ui/css/style.css" />
+		<script>
+			document.documentElement.style.colorScheme =
+				localStorage.getItem('color-scheme-toggle');
+		</script>
+		<script src="src/app.js" type="module"></script>
+	</head>
+	<body>
+		<h1>
+			<a href="?">
+				<small>How does my</small>
+				Browser Score?
+			</a>
+		</h1>
 
-<meta charset="utf-8" />
-<title>Browser Score</title>
-<link rel="icon" href="ui/logo.svg" id="favicon" />
-<link rel="stylesheet" href="ui/css/style.css" />
-<script>
-	document.documentElement.style.colorScheme = localStorage.getItem('color-scheme-toggle');
-</script>
-<script src="src/app.js" type="module"></script>
-
-</head>
-<body>
-
-<h1>
-	<a href="?">
-		<small>How does my</small>
-		Browser Score?
-	</a>
-</h1>
-
-<template id="feature-component-template">
-	<wrap-if  :is="isCollapsible ? 'details' : ''" class="feature-group" :class="{spec: species === 'Spec'}" :data-level="level" :key="feature.uid || feature.id" :id="feature.htmlId || feature.id" ref="details" @toggle="handleToggle" :open="defaultOpen" ref="details">
-		<component v-if="level > 0" :is="isCollapsible ? 'summary' : 'article'"
-			class="featurish" :class="{
+		<template id="feature-component-template">
+			<wrap-if
+				:is="isCollapsible ? 'details' : ''"
+				class="feature-group"
+				:class="{spec: species === 'Spec'}"
+				:data-level="level"
+				:key="feature.uid || feature.id"
+				:id="feature.htmlId || feature.id"
+				ref="details"
+				@toggle="handleToggle"
+				:open="defaultOpen"
+				ref="details"
+			>
+				<component
+					v-if="level > 0"
+					:is="isCollapsible ? 'summary' : 'article'"
+					class="featurish"
+					:class="{
 				[passclass(feature.score)]: true,
 				feature: species === 'Feature',
-			}" :data-level="level" ref="container">
-			<support-status :title="feature.result?.note || null" :score="feature.score" v-if="showScore"></support-status>
-			<wrap-if v-if="feature.title || feature.code || feature.id" :is="species === 'Feature' ? '' : 'h' + level" class="title">
-				<span class="title" v-if="feature.titleHtml" v-html="feature.titleHtml"></span>
-				<wrap-if :is="feature.title ? 'span' : 'code'" class="title" v-else v-text="feature.title ?? feature.code ?? feature.id"></wrap-if>
+			}"
+					:data-level="level"
+					ref="container"
+				>
+					<support-status
+						:title="feature.result?.note || null"
+						:score="feature.score"
+						v-if="showScore"
+					></support-status>
+					<wrap-if
+						v-if="feature.title || feature.code || feature.id"
+						:is="species === 'Feature' ? '' : 'h' + level"
+						class="title"
+					>
+						<span
+							class="title"
+							v-if="feature.titleHtml"
+							v-html="feature.titleHtml"
+						></span>
+						<wrap-if
+							:is="feature.title ? 'span' : 'code'"
+							class="title"
+							v-else
+							v-text="feature.title ?? feature.code ?? feature.id"
+						></wrap-if>
+					</wrap-if>
+					<span class="prefix" v-if="feature.result?.prefix"
+						>{{ feature.result.prefix }}</span
+					>
+
+					<div class="meta" v-if="permalink || feature.link || feature.mdnLink">
+						<a
+							v-if="permalink"
+							:href="permalink"
+							class="icon-before permalink"
+							title="Permalink"
+						></a>
+						<a
+							v-if="feature.link && feature.spec"
+							:href="feature.link"
+							target="_blank"
+							class="badge primary spec-link"
+							:class="`${feature.spec.org.id}-link`"
+						>
+							{{ feature.spec.org.title }}
+							<span v-if="feature.link === feature.draftLink">Proposal</span>
+						</a>
+						<a
+							v-if="feature.specLink && feature.spec && feature.specLink !== feature.link"
+							:href="feature.specLink"
+							target="_blank"
+							class="badge spec-link"
+							:class="`${feature.spec.org.id}-link`"
+							>Spec</a
+						>
+						<a
+							v-if="feature.draftLink && feature.spec && feature.draftLink !== feature.specLink"
+							:href="feature.draftLink"
+							target="_blank"
+							class="badge spec-link"
+							:class="`${feature.spec.org.id}-link`"
+							>Draft</a
+						>
+						<a
+							v-if="feature.mdnLink"
+							:href="feature.mdnLink"
+							target="_blank"
+							class="badge spec-link mdn-link"
+							>MDN</a
+						>
+					</div>
+
+					<div class="spacer"></div>
+
+					<span class="count" v-if="showFeatureCount">{{ feature.score.total }}</span>
+				</component>
+				<div v-if="renderedChildren.length > 0" class="feature-children">
+					<bs-feature
+						v-for="child, index of renderedChildren"
+						:parent="feature"
+						:feature="child"
+						:key="child.uid"
+						:level="level + 1"
+					></bs-feature>
+				</div>
 			</wrap-if>
-			<span class="prefix" v-if="feature.result?.prefix">{{ feature.result.prefix }}</span>
+		</template>
 
-			<div class="meta" v-if="permalink || feature.link || feature.mdnLink">
-				<a v-if="permalink" :href="permalink" class="icon-before permalink" title="Permalink"></a>
-				<a v-if="feature.link && feature.spec" :href="feature.link" target="_blank" class="badge primary spec-link" :class="`${feature.spec.org.id}-link`">
-					{{ feature.spec.org.title }}
-					<span v-if="feature.link === feature.draftLink">Proposal</span>
-				</a>
-				<a v-if="feature.specLink && feature.spec && feature.specLink !== feature.link" :href="feature.specLink" target="_blank" class="badge spec-link" :class="`${feature.spec.org.id}-link`">Spec</a>
-				<a v-if="feature.draftLink && feature.spec && feature.draftLink !== feature.specLink" :href="feature.draftLink" target="_blank" class="badge spec-link" :class="`${feature.spec.org.id}-link`">Draft</a>
-				<a v-if="feature.mdnLink" :href="feature.mdnLink" target="_blank" class="badge spec-link mdn-link">MDN</a>
-			</div>
+		<div id="main_content" v-cloak>
+			<color-scheme-toggle></color-scheme-toggle>
 
-			<div class="spacer"></div>
+			<main id="tests">
+				<header v-if="score">
+					<h1>Your browser scores <strong v-content="percent(score)">0%</strong></h1>
 
-			<span class="count" v-if="showFeatureCount">{{ feature.score.total }}</span>
-		</component>
-		<div v-if="renderedChildren.length > 0" class="feature-children">
-			<bs-feature v-for="child, index of renderedChildren" :parent="feature" :feature="child" :key="child.uid" :level="level + 1"></bs-feature>
-		</div>
-	</wrap-if>
+					<div class="description">
+						<support-status :score="score" ref="supportStatus"></support-status>
+						<ui-tooltip>
+							&nbsp;<span class="recognized">Recognized</span>&nbsp;
+							<article class="caution tooltip">
+								<p>
+									<strong>Caution:</strong> This test checks which web platform
+									features the browser recognizes, <em>not</em> whether they are
+									implemented correctly.
+								</p>
+							</article>
+						</ui-tooltip>
+						<span
+							:title="`passed ${round(score.passedTests)} out of ${score.totalTests} tests`"
+						>
+							<strong v-content="round(score.passed)">0</strong>
+							out of <strong v-content="round(score.total)">0</strong> features
+						</span>
+						in <strong v-content="round(score.testTime) + ' ms'">0 ms</strong>
+					</div>
+				</header>
+				<section id="all">
+					<bs-feature
+						:feature="computedRoot"
+						ref="root"
+						@update:score="score = $event"
+					></bs-feature>
+				</section>
+			</main>
 
-</template>
+			<aside>
+				<carbon-ads params="zoneid=1673&serve=C6AILKT&placement=css3testcom"></carbon-ads>
 
-<div id="main_content" v-cloak>
-	<color-scheme-toggle></color-scheme-toggle>
+				<fieldset>
+					<legend>Group by</legend>
+					<label>
+						<input type="checkbox" name="groupby" v-model="groupBy" value="spec" />
+						Spec
+					</label>
+					<label>
+						<input type="checkbox" name="groupby" v-model="groupBy" value="type" />
+						Type
+					</label>
+				</fieldset>
 
-	<main id="tests">
-		<header v-if="score">
-			<h1>Your browser scores <strong v-content="percent(score)">0%</strong></h1>
+				<fieldset class="filters">
+					<legend>Filter features</legend>
 
-			<div class="description">
-				<support-status :score="score" ref="supportStatus"></support-status>
-				<ui-tooltip>
-					&nbsp;<span class="recognized">Recognized</span>&nbsp;
-					<article class="caution tooltip">
-						<p><strong>Caution:</strong>
-						This test checks which web platform features the browser recognizes, <em>not</em> whether they are implemented correctly.</p>
-					</article>
-				</ui-tooltip>
-				<span :title="`passed ${round(score.passedTests)} out of ${score.totalTests} tests`">
-					<strong v-content="round(score.passed)">0</strong>
-					out of <strong v-content="round(score.total)">0</strong> features
-				</span>
-				in <strong v-content="round(score.testTime) + ' ms'">0 ms</strong>
-			</div>
-		</header>
-		<section id="all">
-			<bs-feature :feature="computedRoot" ref="root" @update:score="score = $event"></bs-feature>
-		</section>
-	</main>
+					<bs-filter
+						label="Type"
+						v-model="filter.type"
+						with-empty
+						:values="featureTypes"
+						:get-label="(id, meta) => meta.title ?? capitalize(id)"
+					></bs-filter>
 
-	<aside>
-		<carbon-ads params="zoneid=1673&serve=C6AILKT&placement=css3testcom"></carbon-ads>
+					<div class="filter">
+						Show:
+						<label>
+							<input
+								type="checkbox"
+								name="filter.supported"
+								v-model="filter.supported"
+								value="pass"
+							/>
+							Supported
+						</label>
+						<label>
+							<input
+								type="checkbox"
+								name="filter.supported"
+								v-model="filter.supported"
+								value="partial"
+							/>
+							Partially supported
+						</label>
+						<label>
+							<input
+								type="checkbox"
+								name="filter.supported"
+								v-model="filter.supported"
+								value="fail"
+							/>
+							Unsupported
+						</label>
+					</div>
+				</fieldset>
 
-		<fieldset>
-			<legend>Group by</legend>
-			<label>
-				<input type="checkbox" name="groupby" v-model="groupBy" value="spec">
-				Spec
-			</label>
-			<label>
-				<input type="checkbox" name="groupby" v-model="groupBy" value="type">
-				Type
-			</label>
-		</fieldset>
+				<fieldset class="filters">
+					<legend>Filter specs</legend>
+					<bs-filter
+						label="Status"
+						v-model="filter.status"
+						:values="{'': 'Any except legacy', 'all': 'Any', 'stable': 'Stable', 'experimental': 'Experimental'}"
+					></bs-filter>
+					<bs-filter
+						label="Snapshot"
+						v-model="filter.snapshot"
+						with-empty
+						:values="snapshots"
+					></bs-filter>
+					<bs-filter
+						label="Standards group"
+						v-model="filter.group"
+						with-empty
+						:values="groups"
+						:get-label="(id, group) => group?.title || id || group"
+					></bs-filter>
 
-		<fieldset class="filters">
-			<legend>Filter features</legend>
+					<bs-filter
+						v-if="filter.group === 'csswg'"
+						label="CSS level"
+						v-model="filter.version"
+						with-empty
+						:values="[2.2, 3, 4, 5, 6]"
+					></bs-filter>
 
-			<bs-filter label="Type" v-model="filter.type" with-empty :values="featureTypes" :get-label="(id, meta) => meta.title ?? capitalize(id)"></bs-filter>
+					<details>
+						<summary>
+							Showing <strong v-text="score?.children.length"></strong> specs
+						</summary>
 
-			<div class="filter">
-				Show:
-				<label>
-					<input type="checkbox" name="filter.supported" v-model="filter.supported" value="pass">
-					Supported
-				</label>
-				<label>
-					<input type="checkbox" name="filter.supported" v-model="filter.supported" value="partial">
-					Partially supported
-				</label>
-				<label>
-					<input type="checkbox" name="filter.supported" v-model="filter.supported" value="fail">
-					Unsupported
-				</label>
-			</div>
-		</fieldset>
-
-		<fieldset class="filters">
-			<legend>Filter specs</legend>
-			<bs-filter label="Status" v-model="filter.status"
-					   :values="{'': 'Any except legacy', 'all': 'Any', 'stable': 'Stable', 'experimental': 'Experimental'}"></bs-filter>
-			<bs-filter label="Snapshot" v-model="filter.snapshot" with-empty :values="snapshots"></bs-filter>
-			<bs-filter label="Standards group" v-model="filter.group" with-empty
-					   :values="groups" :get-label="(id, group) => group?.title || id || group"></bs-filter>
-
-			<bs-filter v-if="filter.group === 'csswg'" label="CSS level" v-model="filter.version" with-empty :values="[2.2, 3, 4, 5, 6]"></bs-filter>
-
-			<details>
-				<summary>Showing <strong v-text="score?.children.length"></strong> specs</summary>
-
-				<ul id="specsTested">
-					<li v-for="spec in specs" :key="spec.id" :class="passclass({
+						<ul id="specsTested">
+							<li
+								v-for="spec in specs"
+								:key="spec.id"
+								:class="passclass({
 						passed: spec.score.passed,
 						total: spec.score.total,
-					})">
-						<support-status :score="spec.score"></support-status>
-						<a :href="`#${spec.id}`">{{ spec.title }}</a>
-					</li>
-				</ul>
-			</details>
-		</fieldset>
+					})"
+							>
+								<support-status :score="spec.score"></support-status>
+								<a :href="`#${spec.id}`">{{ spec.title }}</a>
+							</li>
+						</ul>
+					</details>
+				</fieldset>
 
-		<p>Want more tests? <a href="https://github.com/LeaVerou/css3test" target="_blank">Be my guest!</a></p>
+				<p>
+					Want more tests?
+					<a href="https://github.com/LeaVerou/css3test" target="_blank">Be my guest!</a>
+				</p>
 
-		<footer>
-			<p>
-				Handcrafted by <a href="https://lea.verou.me">Lea Verou</a> and <a href="https://github.com/LeaVerou/css3test/graphs/contributors">friends</a>
-				&#10047; <a href="https://github.com/sponsors/LeaVerou">Sponsor</a>
-			</p>
-		</footer>
-	</aside>
-</div>
-
-</body>
+				<footer>
+					<p>
+						Handcrafted by <a href="https://lea.verou.me">Lea Verou</a> and
+						<a href="https://github.com/LeaVerou/css3test/graphs/contributors"
+							>friends</a
+						>
+						&#10047; <a href="https://github.com/sponsors/LeaVerou">Sponsor</a>
+					</p>
+				</footer>
+			</aside>
+		</div>
+	</body>
 </html>

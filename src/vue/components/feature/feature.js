@@ -44,7 +44,7 @@ export default {
 		}
 	},
 
-	template: "#feature-component-template",
+	template: '#feature-component-template',
 
 	computed: {
 		defaultOpen () {
@@ -76,11 +76,18 @@ export default {
 		},
 
 		showScore () {
-			return !this.parent || this.species === 'Feature' || this.parent.score.total !== this.feature.score.total;
+			return (
+				!this.parent ||
+				this.species === 'Feature' ||
+				this.parent.score.total !== this.feature.score.total
+			);
 		},
 
 		showFeatureCount () {
-			return this.feature.score.total > 1 && (!this.parent || this.parent.score.total !== this.feature.score.total);
+			return (
+				this.feature.score.total > 1 &&
+				(!this.parent || this.parent.score.total !== this.feature.score.total)
+			);
 		},
 
 		permalink () {
@@ -111,20 +118,19 @@ export default {
 			if (open && !this.everOpened) {
 				this.everOpened = true;
 			}
-
 		},
 	},
 
 	watch: {
 		children: {
-			handler() {
+			handler () {
 				this.feature.test();
 			},
 			immediate: true,
 		},
 
-		"score.value": {
-			handler() {
+		'score.value': {
+			handler () {
 				this.$emit('update:score', this.score);
 			},
 			immediate: true,
