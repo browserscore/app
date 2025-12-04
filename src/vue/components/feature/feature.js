@@ -2,16 +2,10 @@
  * Component to render one AbstractFeature instance (feature, feature group, spec, etc.)
  */
 import { IS_DEV, passclass, round, percent, log } from '../../../util.js';
+import { htmlAttributeValue } from '../../../../../supports/src/index.js';
 
 // Supports hidden=until-found?
-let SUPPORTS_HIDDEN_UNTIL_FOUND = false;
-
-if ('hidden' in HTMLElement.prototype) {
-	let dummy = document.createElement('div');
-	dummy.hidden = 'until-found';
-	// If not supported it will revert to `true`
-	SUPPORTS_HIDDEN_UNTIL_FOUND = dummy.hidden === 'until-found';
-}
+let SUPPORTS_HIDDEN_UNTIL_FOUND = htmlAttributeValue('hidden', 'until-found').success;
 
 export default {
 	props: {
