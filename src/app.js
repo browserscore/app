@@ -253,6 +253,7 @@ let appSpec = {
 				this.$nextTick(() => {
 					if (this.score) {
 						this.updateFavicon();
+						console.log(`%c⏱ LCP: ${Math.round(performance.now())} ms`, "font-weight: bold; color: hsl(200, 80%, 50%)");
 					}
 				});
 			},
