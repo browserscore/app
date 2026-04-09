@@ -2,10 +2,6 @@
  * Component to render one AbstractFeature instance (feature, feature group, spec, etc.)
  */
 import { IS_DEV, passclass, round, percent, log } from '../../../util.js';
-import { htmlAttributeValue } from '../../../../../supports/src/index.js';
-
-// Supports hidden=until-found?
-let SUPPORTS_HIDDEN_UNTIL_FOUND = htmlAttributeValue('hidden', 'until-found').success;
 
 export default {
 	props: {
@@ -29,16 +25,13 @@ export default {
 	data () {
 		return {
 			open: false,
-			everOpened: false,
 		};
 	},
 
 	emits: ['update:score'],
 
 	created () {
-		this.open = this.everOpened = this.defaultOpen;
-		// Set hidden to this to ONLY hide if hidden=until-found is supported
-		this.untilFound = SUPPORTS_HIDDEN_UNTIL_FOUND ? 'until-found' : null;
+		this.open = this.defaultOpen;
 	},
 
 	mounted () {
@@ -63,10 +56,6 @@ export default {
 
 		score () {
 			return this.feature.score;
-		},
-
-		renderedChildren () {
-			return !this.isCollapsible || this.everOpened ? this.feature.children : [];
 		},
 
 		species () {
@@ -118,12 +107,7 @@ export default {
 		log,
 
 		handleToggle (event) {
-			let open = event.target.open;
-			this.open = open;
-
-			if (open && !this.everOpened) {
-				this.everOpened = true;
-			}
+			this.open = event.target.open;
 		},
 	},
 
